@@ -6,13 +6,42 @@ const router = express.Router();
 const db = require('../models');
 // import middleware
 const flash = require("flash");
+// TODO update passport config file path
+const passport = require('bcrypt');
 
 // ROUTES
 router.get('/register', (req, res) => {
   res.render('auth/register');
 })
 
-router.post('register', (req, res) => {
+router.get('/login', (req, res) => {
+  res.render('auth/login')
+})
+
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (error, user, info) => {
+    if (!user) {
+      req.flash('error', 'Invalid Username or Password')
+      req.session.save(() => res.redirect('/auth/login'));
+    }
+    if (error) error
+
+    req.login((user, err) => {
+      if (err) next(err)
+      req.flash('success', 'You are valid and logged in')
+      req.session.save(() => res.redirect('/'))
+    })
+  })
+})
+
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/auth/login',
+  successFlash: 'Welcome to our app',
+  failureFlash: 'Invalid username or password'
+}))
+
+router.post('/register', (req, res) => {
   db.user.findOrCreate({
     where: {email: req.body.email},
     defaults: {
