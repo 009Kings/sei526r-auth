@@ -16,7 +16,7 @@ passport.deserializeUser((id, cb) => {
 })
 
 // Password local config
-passport.user(new LocalStrategy({
+passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password'
 }, (email, password, cb) => {

@@ -7,7 +7,7 @@ const db = require('../models');
 // import middleware
 const flash = require("flash");
 // TODO update passport config file path
-const passport = require('bcrypt');
+const passport = require('../config/ppConfig');
 
 // ROUTES
 router.get('/register', (req, res) => {
